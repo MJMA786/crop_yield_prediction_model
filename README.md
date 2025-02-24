@@ -53,7 +53,7 @@ The app will launch in your default browser.
 ├── 📊 Crop Prediction dataset.xlsx  # Dataset used for training
 ├── 📄 rfr(deployment_code).ipynb  # Jupyter Notebook for ML model training
 ├── 📄 README.md   # Project Documentation
-├── 📄 LICENSE  #license        
+├── 📄 LICENSE  # MIT license        
 ```
 
 ## 🏆 Future Enhancements
