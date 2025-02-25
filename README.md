@@ -19,7 +19,7 @@ The **Smart Crop Predictor** is a Machine Learning-powered application designed 
 ## 📌 Installation & Setup
 ### 1️⃣ Clone the Repository
 ```sh
-git clone <your-repo-URL>
+git clone https://github.com/MJMA786/crop_yield_prediction_model
 cd crop_yield_prediction
 ```
 
