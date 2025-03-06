@@ -94,7 +94,8 @@ st.subheader("📝 Selected Inputs")
 
 data = { "Parameter": [ "🌍 State", "🏙 District", "🌱 Season", "📅 Crop Year", "🌾 Crop", "🌡 Temperature (°C)", "💧 Humidity (%)", "🌿 Soil Moisture (%)", "🌾 Area (acres)" ], "Value": [state, district, season, crop_year, crop, temperature, humidity, soil_moisture, area] }
 
-df = pd.DataFrame(data) st.dataframe(df, height=350, width=600)
+df = pd.DataFrame(data) 
+st.dataframe(df, height=350, width=600)
 
 # Encode User Inputs
 state_encoded = label_encoders["State"].transform([state])[0]
