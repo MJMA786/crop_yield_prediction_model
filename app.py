@@ -137,48 +137,21 @@ st.markdown("""
 st.markdown("<h1 class='title'>🌾 Smart Crop Predictor</h1>", unsafe_allow_html=True)
 st.markdown("<p class='sub-title'>Predict the best crop yield based on your location and environmental factors.</p>", unsafe_allow_html=True)
 
-# Enhanced Information Box
-st.markdown( """ <div class='info-box'>
-    <div class='info-title'>🌾 Smart Crop Predictor – ML-Powered Yield Estimator</div>
-    <p>Welcome to <b class='highlight'>Smart Crop Predictor</b>, an advanced <b>Machine Learning (ML)</b> application designed to help farmers, researchers, and agronomists make data-driven crop yield predictions.</p>
-    <div class='info-section'>🚀 Key Features</div>
-    <ul class='info-list'>
-        <li>✅ <b>State & District:</b> Location-based crop productivity insights.</li>
-        <li>✅ <b>Season Selection:</b> Choose the right season for optimal yield.</li>
-        <li>✅ <b>Crop Type:</b> Identify yield variations for different crops.</li>
-        <li>✅ <b>Environmental Factors:</b> Temperature, humidity, and soil conditions.</li>
-        <li>✅ <b>Farm Area:</b> Yield estimation based on cultivated land size.</li>
-    </ul>
-    <div class='info-section'>🧠 How It Works</div>
-    <ol class='info-list'>
-        <li>1️⃣ Enter your <b>location</b>, <b>season</b>, and <b>crop details</b>.</li>
-        <li>2️⃣ Adjust key environmental parameters.</li>
-        <li>3️⃣ Click <b>‘Predict Crop Yield’</b> to generate an estimate.</li>
-        <li>4️⃣ Use insights for smarter agricultural decisions!</li>
-    </ol>
-    <div class='info-section'>🔬 Why This Matters?</div>
-    <ul class='info-list'>
-        <li>✅ Supports <b>data-driven farming</b> for improved yields.</li>
-        <li>✅ Helps <b>farmers optimize resources</b> and maximize profits.</li>
-        <li>✅ Aids policymakers in <b>sustainable agriculture planning</b>.</li>
-    </ul>
-    <div class='info-section'>🧑‍💻 How the ML Model Works</div>
-    <p>The prediction model is built on <b class='highlight'>historical crop yield data</b> and advanced machine learning techniques.</p>
-    <ul class='info-list'>
-        <li>🔹 <b>Model Type:</b> Supervised Learning (e.g., <b>Random Forest</b>).</li>
-        <li>🔹 <b>Key Inputs:</b> 
-            <ul>
-                <li>Climate Factors: Temperature, Humidity, Rainfall.</li>
-                <li>Soil Conditions: Moisture level, Cultivation area.</li>
-                <li>Geographical Data: State, District, Season.</li>
-                <li>Crop Type: Encoded for accurate predictions.</li>
-            </ul>
-        </li>
-    </ul>
-    <div class='info-section'>🌱 Smart Farming, Smarter Decisions!</div>
-    <p>⚡ <b>Leverage AI-powered precision farming for better yields & sustainability.</b></p>
-</div>
-""",unsafe_allow_html=True)
+# Function to generate recommendations based on predicted yield
+def get_recommendations(predicted_yield, crop):
+    """
+    Generate recommendations based on predicted crop yield.
+    """
+    if predicted_yield < 2:
+        recommendation = f"💧 Watering and fertilization might be required for {crop} to boost yield."
+    elif predicted_yield < 4:
+        recommendation = f"🌱 {crop} yield is average. Ensure proper irrigation and pest control."
+    elif predicted_yield < 6:
+        recommendation = f"🌾 Great yield for {crop}. Maintain current agricultural practices."
+    else:
+        recommendation = f"🚜 Excellent yield for {crop}. Consider optimizing harvesting and distribution."
+    
+    return recommendation
 
 # Sidebar Inputs
 st.sidebar.header("📍 Location & Season")
@@ -198,8 +171,20 @@ area = st.sidebar.number_input('Area (acres)', min_value=0.1, max_value=1000.0, 
 
 # Display Selected Inputs
 st.subheader("📝 Selected Inputs")
-data = { "Parameter": [ "🌍 State", "🏙 District", "🌱 Season", "📅 Crop Year", "🌾 Crop", "🌡 Temperature (°C)", "💧 Humidity (%)", "🌿 Soil Moisture (%)", "🌾 Area (acres)" ], "Value": [state, district, season, crop_year, crop, temperature, humidity, soil_moisture, area] }
-df = pd.DataFrame(data) 
+data = {
+    "Parameter": [
+        "🌍 State", "🏙 District", "🌱 Season", "📅 Crop Year", "🌾 Crop", 
+        "🌡 Temperature (°C)", "💧 Humidity (%)", "🌿 Soil Moisture (%)", "🌾 Area (acres)"
+    ],
+    "Value": [
+        state, district, season, crop_year, crop, temperature, humidity, soil_moisture, area
+    ]
+}
+
+# Ensure values are strings for compatibility
+df = pd.DataFrame(data)
+df['Value'] = df['Value'].apply(lambda x: str(x) if isinstance(x, (int, float)) else x)
+
 st.dataframe(df, height=350, width=600, use_container_width=True)
 
 # Predict Crop Yield
