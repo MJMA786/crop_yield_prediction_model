@@ -76,8 +76,34 @@ st.markdown("<p class='sub-title'>Predict the best crop yield based on your loca
 
 # Enhanced Information Box (Styled & Aligned)
 
-st.markdown( """ <style> .info-box { background: linear-gradient(to right, #e8f5e9, #f1f8e9); padding: 25px; border-radius: 15px; margin-bottom: 20px; border-left: 6px solid #2E7D32; box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.1); } .info-title { font-size: 24px; font-weight: bold; color: #1B5E20; text-align: center; margin-bottom: 12px; } .info-section { font-size: 18px; font-weight: bold; color: #388E3C; margin-top: 15px; } .info-list { padding-left: 25px; font-size: 16px; line-height: 1.6; color: #333; } .highlight { color: #1B5E20; font-weight: bold; } </style>
-
+st.markdown( """ <style> 
+.info-box { 
+background: linear-gradient(to right, #e8f5e9, #f1f8e9); 
+padding: 25px; 
+border-radius: 15px; 
+margin-bottom: 20px; 
+border-left: 6px solid #2E7D32; 
+box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.1); }
+.info-title { 
+font-size: 24px; 
+font-weight: bold; 
+color: #1B5E20; 
+text-align: center; 
+margin-bottom: 12px; } 
+.info-section { 
+font-size: 18px; 
+font-weight: bold; 
+color: #388E3C; 
+margin-top: 15px; } 
+.info-list { 
+padding-left: 25px; 
+font-size: 16px; 
+line-height: 1.6; 
+color: #333; } 
+.highlight { 
+color: #1B5E20; 
+font-weight: bold; 
+} </style>
 <div class='info-box'>
     <div class='info-title'>🌾 Smart Crop Predictor – ML-Powered Yield Estimator</div>
     <p>Welcome to <b class='highlight'>Smart Crop Predictor</b>, an advanced <b>Machine Learning (ML)</b> application designed to help farmers, researchers, and agronomists make data-driven crop yield predictions.</p>
