@@ -42,12 +42,22 @@ label_encoders["Crop"].fit(crops)
 # UI Styling
 st.markdown("""
     <style>
+        /* Page Background */
+        body {
+            background: #f1f8e9;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Title */
         .title {
             text-align: center;
             font-size: 40px;
             font-weight: bold;
             color: #2E7D32;
+            animation: fadeIn 1s ease-in-out;
         }
+
+        /* Main Prediction Box */
         .prediction-box {
             background-color: #ffffff;
             padding: 20px;
@@ -57,14 +67,68 @@ st.markdown("""
             font-size: 22px;
             font-weight: bold;
             color: #2E7D32;
-            animation: bounceIn 0.8s ease-in-out;
+            animation: bounceIn 1s ease-in-out;
         }
+
+        /* Information Box */
+        .info-box {
+            background: linear-gradient(to right, #e8f5e9, #f1f8e9); 
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-left: 6px solid #2E7D32;
+            box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.1);
+            animation: fadeInUp 1.5s ease-in-out;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        @keyframes bounceIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            60% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Recommendation Box */
         .recommendation-box {
             background: #e8f5e9;
-            padding: 15px;
+            padding: 20px;
             border-radius: 10px;
-            margin-top: 15px;
             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 15px;
+            animation: fadeInUp 1.5s ease-in-out;
+        }
+
+        /* Button Styles */
+        .predict-button {
+            background-color: #2E7D32;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .predict-button:hover {
+            background-color: #1B5E20;
+            transform: scale(1.05);
+        }
+
+        /* DataFrame Styles */
+        .dataframe {
+            margin-top: 30px;
+            border-radius: 10px;
+            background-color: #ffffff;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
         }
     </style>
 """, unsafe_allow_html=True)
@@ -73,38 +137,8 @@ st.markdown("""
 st.markdown("<h1 class='title'>🌾 Smart Crop Predictor</h1>", unsafe_allow_html=True)
 st.markdown("<p class='sub-title'>Predict the best crop yield based on your location and environmental factors.</p>", unsafe_allow_html=True)
 
-
-# Enhanced Information Box (Styled & Aligned)
-
-st.markdown( """ <style> 
-.info-box { 
-background: linear-gradient(to right, #e8f5e9, #f1f8e9); 
-padding: 25px; 
-border-radius: 15px; 
-margin-bottom: 20px; 
-border-left: 6px solid #2E7D32; 
-box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.1); }
-.info-title { 
-font-size: 24px; 
-font-weight: bold; 
-color: #1B5E20; 
-text-align: center; 
-margin-bottom: 12px; } 
-.info-section { 
-font-size: 18px; 
-font-weight: bold; 
-color: #388E3C; 
-margin-top: 15px; } 
-.info-list { 
-padding-left: 25px; 
-font-size: 16px; 
-line-height: 1.6; 
-color: #333; } 
-.highlight { 
-color: #1B5E20; 
-font-weight: bold; 
-} </style>
-<div class='info-box'>
+# Enhanced Information Box
+st.markdown( """ <div class='info-box'>
     <div class='info-title'>🌾 Smart Crop Predictor – ML-Powered Yield Estimator</div>
     <p>Welcome to <b class='highlight'>Smart Crop Predictor</b>, an advanced <b>Machine Learning (ML)</b> application designed to help farmers, researchers, and agronomists make data-driven crop yield predictions.</p>
     <div class='info-section'>🚀 Key Features</div>
@@ -163,32 +197,14 @@ soil_moisture = st.sidebar.slider('Soil Moisture (%)', 0.0, 100.0, 50.0, step=0.
 area = st.sidebar.number_input('Area (acres)', min_value=0.1, max_value=1000.0, value=4.0, step=0.1)
 
 # Display Selected Inputs
-
 st.subheader("📝 Selected Inputs")
-
 data = { "Parameter": [ "🌍 State", "🏙 District", "🌱 Season", "📅 Crop Year", "🌾 Crop", "🌡 Temperature (°C)", "💧 Humidity (%)", "🌿 Soil Moisture (%)", "🌾 Area (acres)" ], "Value": [state, district, season, crop_year, crop, temperature, humidity, soil_moisture, area] }
-
 df = pd.DataFrame(data) 
-st.dataframe(df, height=350, width=600)
-
-# Encode User Inputs
-state_encoded = label_encoders["State"].transform([state])[0]
-district_encoded = label_encoders["District"].transform([district])[0]
-season_encoded = label_encoders["Season"].transform([season])[0]
-crop_encoded = label_encoders["Crop"].transform([crop])[0]
-
-# Recommendation System
-def get_recommendations(predicted_yield, crop):
-    if predicted_yield < 2:
-        return f"🚜 **Low Yield Expected!** \n- Use organic fertilizers and irrigation. \n- Consider **drought-resistant varieties** of {crop}. \n- Improve **soil moisture retention** by adding mulch."
-    elif 2 <= predicted_yield < 4:
-        return f"🌱 **Moderate Yield Expected.** \n- Optimize **fertilizer** application based on soil tests. \n- Implement **pest control measures** to protect {crop}. \n- Maintain proper **crop rotation** to improve soil health."
-    else:
-        return f"🌾 **High Yield Expected!** \n- Ensure regular **water supply** to sustain yield. \n- Store harvested {crop} properly to **avoid post-harvest losses**. \n- Consider **selling in bulk** for better market rates."
+st.dataframe(df, height=350, width=600, use_container_width=True)
 
 # Predict Crop Yield
 if st.button('🚜 Predict Crop Yield', key="predict_main"):
-    input_data = np.array([[temperature, humidity, soil_moisture, area, crop_encoded, state_encoded, district_encoded, season_encoded]])
+    input_data = np.array([[temperature, humidity, soil_moisture, area, label_encoders["Crop"].transform([crop])[0], label_encoders["State"].transform([state])[0], label_encoders["District"].transform([district])[0], label_encoders["Season"].transform([season])[0]]])
 
     with st.spinner("Predicting... Please wait ⏳"):
         time.sleep(1)  # Simulate processing time
