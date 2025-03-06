@@ -88,6 +88,14 @@ humidity = st.sidebar.slider('Humidity (%)', 0.0, 100.0, 60.0, step=0.1)
 soil_moisture = st.sidebar.slider('Soil Moisture (%)', 0.0, 100.0, 50.0, step=0.1)
 area = st.sidebar.number_input('Area (acres)', min_value=0.1, max_value=1000.0, value=4.0, step=0.1)
 
+# Display Selected Inputs
+
+st.subheader("📝 Selected Inputs")
+
+data = { "Parameter": [ "🌍 State", "🏙 District", "🌱 Season", "📅 Crop Year", "🌾 Crop", "🌡 Temperature (°C)", "💧 Humidity (%)", "🌿 Soil Moisture (%)", "🌾 Area (acres)" ], "Value": [state, district, season, crop_year, crop, temperature, humidity, soil_moisture, area] }
+
+df = pd.DataFrame(data) st.dataframe(df, height=350, width=600)
+
 # Encode User Inputs
 state_encoded = label_encoders["State"].transform([state])[0]
 district_encoded = label_encoders["District"].transform([district])[0]
