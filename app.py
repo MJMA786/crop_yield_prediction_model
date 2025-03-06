@@ -39,10 +39,40 @@ label_encoders["District"].fit([d for districts in district_map.values() for d i
 label_encoders["Season"].fit(seasons)
 label_encoders["Crop"].fit(crops)
 
-# Styling
-st.markdown("<h1 style='text-align:center; color:#2E7D32;'>🌾 Smart Crop Predictor</h1>", unsafe_allow_html=True)
+# UI Styling
+st.markdown("""
+    <style>
+        .title {
+            text-align: center;
+            font-size: 40px;
+            font-weight: bold;
+            color: #2E7D32;
+        }
+        .prediction-box {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: #2E7D32;
+            animation: bounceIn 0.8s ease-in-out;
+        }
+        .recommendation-box {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+""", unsafe_allow_html=True)
 
-# Sidebar for Inputs
+# Main Title
+st.markdown("<h1 class='title'>🌾 Smart Crop Predictor</h1>", unsafe_allow_html=True)
+
+# Sidebar Inputs
 st.sidebar.header("📍 Location & Season")
 state = st.sidebar.selectbox("State", states)
 district = st.sidebar.selectbox("District", district_map[state])
@@ -64,78 +94,39 @@ district_encoded = label_encoders["District"].transform([district])[0]
 season_encoded = label_encoders["Season"].transform([season])[0]
 crop_encoded = label_encoders["Crop"].transform([crop])[0]
 
+# Recommendation System
+def get_recommendations(predicted_yield, crop):
+    if predicted_yield < 2:
+        return f"🚜 **Low Yield Expected!** \n- Use organic fertilizers and irrigation. \n- Consider **drought-resistant varieties** of {crop}. \n- Improve **soil moisture retention** by adding mulch."
+    elif 2 <= predicted_yield < 4:
+        return f"🌱 **Moderate Yield Expected.** \n- Optimize **fertilizer** application based on soil tests. \n- Implement **pest control measures** to protect {crop}. \n- Maintain proper **crop rotation** to improve soil health."
+    else:
+        return f"🌾 **High Yield Expected!** \n- Ensure regular **water supply** to sustain yield. \n- Store harvested {crop} properly to **avoid post-harvest losses**. \n- Consider **selling in bulk** for better market rates."
+
 # Predict Crop Yield
 if st.button('🚜 Predict Crop Yield', key="predict_main"):
     input_data = np.array([[temperature, humidity, soil_moisture, area, crop_encoded, state_encoded, district_encoded, season_encoded]])
 
     with st.spinner("Predicting... Please wait ⏳"):
         time.sleep(1)  # Simulate processing time
-        prediction = model.predict(input_data)[0]
+        prediction = model.predict(input_data)
+        predicted_yield = prediction[0]
 
-    # Categorize yield
-    if prediction < 1.5:
-        yield_category = "Low"
-        recommendation = "Consider using organic fertilizers and optimizing irrigation methods."
-    elif 1.5 <= prediction < 3.5:
-        yield_category = "Moderate"
-        recommendation = "Yield is moderate. Improve soil health and monitor moisture levels."
-    else:
-        yield_category = "High"
-        recommendation = "Great yield potential! Maintain proper fertilization and irrigation techniques."
-
-    # Additional Environmental Recommendations
-    env_recommendations = []
-    if temperature > 35:
-        env_recommendations.append("🌡️ Temperature is high. Use mulching and shade to reduce heat stress.")
-    if humidity > 80:
-        env_recommendations.append("💧 High humidity detected. Monitor for fungal infections and use suitable fungicides.")
-    if soil_moisture < 30:
-        env_recommendations.append("🌱 Low soil moisture. Consider drip irrigation for optimal growth.")
-
-    # Best Harvesting Time
-    harvest_time = {
-        "Rice": "September - November",
-        "Wheat": "March - May",
-        "Maize": "October - November",
-        "Barley": "April - June",
-        "Soybean": "September - October",
-        "Banana": "Year-round",
-        "Sugarcane": "November - April",
-        "Turmeric": "January - February"
-    }
-    best_harvest = harvest_time.get(crop, "Seasonal")
-
-    # Fertilizer Recommendation
-    fertilizer_suggestions = {
-        "Rice": "Use Nitrogen, Phosphorus, and Potassium fertilizers in balanced amounts.",
-        "Wheat": "Apply Urea, DAP, and MOP for better yield.",
-        "Maize": "Ensure adequate Nitrogen supply for healthy growth.",
-        "Soybean": "Use Phosphorus-rich fertilizers for improved pod formation.",
-        "Banana": "Regular application of organic compost and potassium-rich fertilizers is recommended.",
-        "Sugarcane": "Use nitrogen-based fertilizers along with micronutrients.",
-        "Turmeric": "Apply farmyard manure and phosphorus fertilizers for better root development."
-    }
-    fertilizer_recommendation = fertilizer_suggestions.get(crop, "Use organic fertilizers to improve soil health.")
-
-    # Display Results
+    # Display Yield Prediction
     st.markdown(f"""
-        <div style='background-color:#f1f8e9; padding:20px; border-radius:10px; text-align:center;'>
-            <h2>🌾 Estimated Crop Yield: <b>{prediction:.2f} Tons</b></h2>
-            <h3 style='color: {"red" if yield_category == "Low" else "orange" if yield_category == "Moderate" else "green"}'>
-                {yield_category} Yield
-            </h3>
-            <p><b>📌 Recommendation:</b> {recommendation}</p>
+        <div class='prediction-box'>
+            🌾 Estimated Crop Yield: <b>{predicted_yield:.2f}</b> Tons
         </div>
     """, unsafe_allow_html=True)
 
-    # Additional Recommendations
-    if env_recommendations:
-        st.markdown("### 🌍 Environmental Advice")
-        for rec in env_recommendations:
-            st.write(f"✅ {rec}")
-
-    st.markdown(f"### ⏳ Best Harvesting Time: {best_harvest}")
-    st.markdown(f"### 🌱 Fertilizer Recommendation: {fertilizer_recommendation}")
+    # Display Recommendations
+    recommendations = get_recommendations(predicted_yield, crop)
+    st.markdown(f"""
+        <div class='recommendation-box'>
+            <h4>🌱 Recommended Actions:</h4>
+            <p>{recommendations}</p>
+        </div>
+    """, unsafe_allow_html=True)
 
 # Footer
 st.markdown("<p style='text-align:center; color:#888888; margin-top:30px;'>🌱 Powered by MJMA</p>", unsafe_allow_html=True)
