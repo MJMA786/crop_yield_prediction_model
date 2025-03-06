@@ -39,6 +39,7 @@ label_encoders["District"].fit([d for districts in district_map.values() for d i
 label_encoders["Season"].fit(seasons)
 label_encoders["Crop"].fit(crops)
 
+# Custom Styling
 st.markdown("""
     <style>
         @keyframes fadeIn {
@@ -107,127 +108,26 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# UI Styling
-st.markdown("""
-    <style>
-        .title {
-            text-align: center;
-            font-size: 40px;
-            font-weight: bold;
-            color: #2E7D32;
-        }
-        .sub-title {
-            text-align: center;
-            font-size: 18px;
-            margin-bottom: 20px;
-            color: #555;
-        }
-        .stButton>button {
-            background: #2E7D32 !important;
-            color: white;
-            font-size: 18px;
-            padding: 10px 20px;
-            border-radius: 10px;
-            border: none;
-        }
-        .info-box {
-            background-color: #f4f4f4;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            text-align: justify;
-            font-size: 16px;
-            color: #333;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
 # Main Title and Description
 st.markdown("<h1 class='title'>🌾 Smart Crop Predictor</h1>", unsafe_allow_html=True)
 st.markdown("<p class='sub-title'>Predict the best crop yield based on your location and environmental factors.</p>", unsafe_allow_html=True)
 
-# Enhanced Information Box (Styled & Aligned)
-st.markdown(
-    """
-    <style>
-        .info-box {
-            background: linear-gradient(to right, #e8f5e9, #f1f8e9);
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            border-left: 6px solid #2E7D32;
-            box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.1);
-        }
-        .info-title {
-            font-size: 24px;
-            font-weight: bold;
-            color: #1B5E20;
-            text-align: center;
-            margin-bottom: 12px;
-        }
-        .info-section {
-            font-size: 18px;
-            font-weight: bold;
-            color: #388E3C;
-            margin-top: 15px;
-        }
-        .info-list {
-            padding-left: 25px;
-            font-size: 16px;
-            line-height: 1.6;
-            color: #333;
-        }
-        .highlight {
-            color: #1B5E20;
-            font-weight: bold;
-        }
-    </style>
-
+# Information Box
+st.markdown("""
     <div class='info-box'>
-        <div class='info-title'>🌾 Smart Crop Predictor – ML-Powered Yield Estimator</div>
-        <p>Welcome to <b class='highlight'>Smart Crop Predictor</b>, an advanced <b>Machine Learning (ML)</b> application designed to help farmers, researchers, and agronomists make data-driven crop yield predictions.</p>
-        <div class='info-section'>🚀 Key Features</div>
-        <ul class='info-list'>
-            <li>✅ <b>State & District:</b> Location-based crop productivity insights.</li>
-            <li>✅ <b>Season Selection:</b> Choose the right season for optimal yield.</li>
-            <li>✅ <b>Crop Type:</b> Identify yield variations for different crops.</li>
-            <li>✅ <b>Environmental Factors:</b> Temperature, humidity, and soil conditions.</li>
-            <li>✅ <b>Farm Area:</b> Yield estimation based on cultivated land size.</li>
+        <h3>🌾 Smart Crop Predictor – ML-Powered Yield Estimator</h3>
+        <p>Welcome to <b>Smart Crop Predictor</b>, an advanced <b>Machine Learning</b> tool designed to assist farmers, researchers, and policymakers with crop yield predictions.</p>
+        <h4>🚀 Key Features</h4>
+        <ul>
+            <li>🌍 Location & Season-based yield predictions.</li>
+            <li>🌾 Crop-specific yield estimation.</li>
+            <li>🌦 Environmental factor integration.</li>
+            <li>📊 Data-driven agricultural insights.</li>
         </ul>
-        <div class='info-section'>🧠 How It Works</div>
-        <ol class='info-list'>
-            <li>1️⃣ Enter your <b>location</b>, <b>season</b>, and <b>crop details</b>.</li>
-            <li>2️⃣ Adjust key environmental parameters.</li>
-            <li>3️⃣ Click <b>‘Predict Crop Yield’</b> to generate an estimate.</li>
-            <li>4️⃣ Use insights for smarter agricultural decisions!</li>
-        </ol>
-        <div class='info-section'>🔬 Why This Matters?</div>
-        <ul class='info-list'>
-            <li>✅ Supports <b>data-driven farming</b> for improved yields.</li>
-            <li>✅ Helps <b>farmers optimize resources</b> and maximize profits.</li>
-            <li>✅ Aids policymakers in <b>sustainable agriculture planning</b>.</li>
-        </ul>
-        <div class='info-section'>🧑‍💻 How the ML Model Works</div>
-        <p>The prediction model is built on <b class='highlight'>historical crop yield data</b> and advanced machine learning techniques.</p>
-        <ul class='info-list'>
-            <li>🔹 <b>Model Type:</b> Supervised Learning (e.g., <b>Random Forest</b>).</li>
-            <li>🔹 <b>Key Inputs:</b> 
-                <ul>
-                    <li>Climate Factors: Temperature, Humidity, Rainfall.</li>
-                    <li>Soil Conditions: Moisture level, Cultivation area.</li>
-                    <li>Geographical Data: State, District, Season.</li>
-                    <li>Crop Type: Encoded for accurate predictions.</li>
-                </ul>
-            </li>
-        </ul>
-        <div class='info-section'>🌱 Smart Farming, Smarter Decisions!</div>
-        <p>⚡ <b>Leverage AI-powered precision farming for better yields & sustainability.</b></p>
     </div>
-    """,
-    unsafe_allow_html=True
-)
+""", unsafe_allow_html=True)
 
-# Sidebar for Inputs
+# Sidebar Inputs
 st.sidebar.header("📍 Location & Season")
 state = st.sidebar.selectbox("State", states)
 district = st.sidebar.selectbox("District", district_map[state])
@@ -247,10 +147,8 @@ area = st.sidebar.number_input('Area (acres)', min_value=0.1, max_value=1000.0, 
 st.subheader("📝 Selected Inputs")
 
 data = {
-    "Parameter": [
-        "🌍 State", "🏙 District", "🌱 Season", "📅 Crop Year", "🌾 Crop", 
-        "🌡 Temperature (°C)", "💧 Humidity (%)", "🌿 Soil Moisture (%)", "🌾 Area (acres)"
-    ],
+    "Parameter": ["🌍 State", "🏙 District", "🌱 Season", "📅 Crop Year", "🌾 Crop", 
+                  "🌡 Temperature (°C)", "💧 Humidity (%)", "🌿 Soil Moisture (%)", "🌾 Area (acres)"],
     "Value": [state, district, season, crop_year, crop, temperature, humidity, soil_moisture, area]
 }
 
@@ -276,7 +174,6 @@ if st.button('🚜 Predict Crop Yield', key="predict_main"):
             🌾 Estimated Crop Yield: <b>{prediction[0]:.2f}</b> Tons
         </div>
     """, unsafe_allow_html=True)
-
 
 # Footer
 st.markdown("<p style='text-align:center; color:#888888; margin-top:30px;'>🌱 Powered by MJMA</p>", unsafe_allow_html=True)
